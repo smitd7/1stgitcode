@@ -1,0 +1,83 @@
+<!-- in below code all data has been stored in local storage without removing duplicate users and we can show all user input data on screen -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller page</title>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Product Details</h2>
+        <form action="#">
+            <div class="form-group">
+                <label for="productname">product</label>
+                <input type="text" class="form-control" id="productname" placeholder="Enter product" name="product">
+            </div>
+            <hr>
+            <div class="form-group">
+                <label for="sellprice">price</label>
+                <input type="number" class="form-control" id="sellprice" placeholder="Enter price" name="price">
+            </div>
+            <hr>
+            
+            
+            <button type="button" onclick="saveData()" id="save_btn" class="btn btn-default">Add Product</button>
+        </form>
+    </div>
+    <div class="col-sm-6">
+        <h2 style="text-align:left">Product table</h2>
+        <div class="row">
+            <!-- <div class="col-sm-4">product</div>
+            <div class="col-sm-4">price</div> -->
+            
+        </div>
+        <div id="showUsers"></div>
+    </div>
+
+</body>
+<script>
+    showdata();
+
+    function saveData() {
+        let productname, productprice;
+        productname = document.getElementById("productname").value;
+        productprice = document.getElementById("sellprice").value;
+        
+        
+
+        let user_records = new Array();
+        user_records = JSON.parse(localStorage.getItem("users")) ? JSON.parse(localStorage.getItem("users")) : []
+        user_records.push({
+            "productname": productname,
+            "productprice": productprice,
+            
+        })
+
+        localStorage.setItem("users", JSON.stringify(user_records));
+        showdata();
+    }
+
+
+    function showdata() {
+        document.getElementById("showUsers").innerHTML = "";
+        let user_records = new Array();
+        user_records = JSON.parse(localStorage.getItem("users")) ? JSON.parse(localStorage.getItem("users")) : []
+        if (user_records) {
+            for (let i = 0; i < user_records.length; i++) {
+                let addDiv = document.createElement('div');
+                addDiv.className = "row";
+                addDiv.innerHTML = '<div class="col-sm-4">' + user_records[i].productname + '</div><div class="col-sm-4">' + user_records[i].productprice + '</div>';
+                document.getElementById("showUsers").appendChild(addDiv);
+
+            }
+        }
+
+    }
+
+</script>
+
+</html>

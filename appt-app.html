@@ -1,0 +1,81 @@
+<!-- adding a edit button -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment App</title>
+</head>
+<body>
+    <form onsubmit="saveToLocalStorage(event)">
+        <label>Name</label>
+        <!-- (add ids for inputs to use in edit button) -->
+        <input type="text" name="username" id="usernameinputtag" required />     
+        <label>EmailID</label>
+        <input type="email" name="emailid" id="emailinputtag" required />
+        <label>phone number</label>
+        <input type="tel" name="phonenumber" id="phonenumberinputtag" required />
+        <button>Submit</button>
+    </form>
+    <ul id="listOfitems"></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.2/axios.min.js"></script>
+    <script>
+        function saveToLocalStorage(event){ //to prevent default reloading
+            event.preventDefault();    
+            const name=event.target.username.value;  //assigning variables to store in local storage (copy paste name from input line)
+            const email=event.target.emailid.value;
+            const phonenumber=event.target.phonenumber.value;
+            // localStorage.setItem('name',name);   //store in local storage in key:value format
+            // localStorage.setItem('email',email);
+            // localStorage.setItem('phonenumber',phonenumber);
+            const obj={    //storing data in single user details string
+                name:name,
+                email:email,
+                phonenumber:phonenumber
+            }
+            axios.post("https://crudcrud.com/api/4687f826574148f4a455861f50bc9e4c/appointmentData",obj)
+                .then((response) => {   //axios takes promise hence add success and failure as .then and .catch
+                    showUserOnScreen(response.data)  //to show crud stored data on screen
+                    // console.log(response);
+                }).catch((err) => {
+                    console.log(err);                
+                });
+""            // localStorage.setItem(obj.email,JSON.stringify(obj)) (comment out localstorage to use axios)      //by using json.stringify we can covert object into string
+            // showUserOnScreen(obj)  //remove this as its local storage part
+        }
+        function showUserOnScreen(obj){
+            const parentElement=document.getElementById('listOfitems') ///assigning parent element
+            const childelement=document.createElement('li')
+            childelement.textContent=obj.name+'-'+obj.email+'-'+obj.phonenumber+'-'
+            // parentElement.innerHTML=parentElement.innerHTML+`<li>${obj.name}-${obj.email}-${obj.phonenumber}</li>` //<li> is used to align data neatly on screen
+                //parentElement.innerHTM used to shoow past and present user on screen in list manner
+
+            const deletebutton=document.createElement('input'); //adding delete button
+            deletebutton.type='button'
+            deletebutton.value='Delete'
+            deletebutton.onclick=()=>{
+                localStorage.removeItem(obj.email)
+                parentElement.removeChild(childelement)
+            }
+            const editbutton=document.createElement('input') //adding edit button
+            editbutton.type='button'
+            editbutton.value='edit'
+            editbutton.onclick=()=>{
+                localStorage.removeItem(obj.email)
+                parentElement.removeChild(childelement)
+                document.getElementById('usernameinputtag').value=obj.name
+                document.getElementById('emailinputtag').value=obj.email
+                document.getElementById('phonenumberinputtag').value=obj.phonenumber
+
+            }
+            childelement.appendChild(deletebutton)
+            childelement.appendChild(editbutton)
+            parentElement.appendChild(childelement)
+
+
+        }
+    </script>
+    
+</body>
+
